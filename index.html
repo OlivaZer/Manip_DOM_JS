@@ -9,118 +9,105 @@
 </head>
 <body>
     <div id="board"></div>
-    <div id="timer">100</div>
+    <div id="timer">0:00</div>
+    <div id="scoreboard">
+        <h2>Score board :</h2>
+        <ul id="scores"></ul>
+    </div>
 
     <script>
 
-        let nombreBox = prompt("Choisisez le nombre de box");
+        let nombreBox = prompt("Choisissez le nombre de box");
 
-        function shuffelChildren(parent){
-            let children = parent.children
-            let i = children.length, k , temp
-            while( --i > 0){
-                k = Math.floor(Math.random() * (i+1))
-                temp = children[k]
-                children[k] = children[i]
-                parent.appendChild(temp)
+        function shuffelChildren(parent) {
+            let children = parent.children;
+            let i = children.length, k, temp;
+            while (--i > 0) {
+                k = Math.floor(Math.random() * (i + 1));
+                temp = children[k];
+                children[k] = children[i];
+                parent.appendChild(temp);
             }
         }
 
-        function showReaction(type, clickedBox){
-            clickedBox.classList.add(type)
-            if(type !=="success"){
-                setTimeout(function(){
-                    clickedBox.classList.remove(type)
-                }, 800)
+        function showReaction(type, clickedBox) {
+            clickedBox.classList.add(type);
+            if (type !== "success") {
+                setTimeout(function () {
+                    clickedBox.classList.remove(type);
+                }, 800);
             }
         }
 
-        
-        const box = document.createElement("div")
-        box.classList.add("box")
+        const box = document.createElement("div");
+        box.classList.add("box");
 
-        const board = document.querySelector ("#board")
+        const board = document.querySelector("#board");
+        const timerDisplay = document.querySelector("#timer");
+        const scoresList = document.querySelector("#scores");
 
         let nb = 1;
+        let timerInterval;
+        let seconds = 0;
+        let minutes = 0;
 
-        for ( let i = 1; i <= nombreBox; i++ ){
-            const newbox = box.cloneNode()
-            newbox.innerText = i
-            board.appendChild(newbox)
+        for (let i = 1; i <= nombreBox; i++) {
+            const newbox = box.cloneNode();
+            newbox.innerText = i;
+            board.appendChild(newbox);
 
-            newbox.addEventListener("click", function(){
+            newbox.addEventListener("click", function () {
 
-                if(i == nb){
-                newbox.classList.add("box-valid")
-                //1
-                    if(nb == board.children.length){
-                        board.querySelectorAll(".box").forEach(function(box){
-                            showReaction("success",box)
-                        })
+                if (i === nb) {
+                    newbox.classList.add("box-valid");
+
+                    if (nb === board.children.length) {
+                        board.querySelectorAll(".box").forEach(function (box) {
+                            showReaction("success", box);
+                        });
+                        clearInterval(timerInterval);
+                        saveScore();
                     }
-                    shuffelChildren(board);
-                    nb++
-                }
-                //2
-                else if (i> nb){
-                    showReaction("error", newbox)
-                    nb = 1
-                    board.querySelectorAll(".box-valid").forEach(function(validBox){
-                        validBox.classList.remove("box-valid");  
-                    })
-                    shuffelChildren(board);
-                }
-                //3
-                else{
 
+                    shuffelChildren(board);
+                    nb++;
+                }
+                else if (i > nb) {
+                    showReaction("error", newbox);
+                    nb = 1;
+                    board.querySelectorAll(".box-valid").forEach(function (validBox) {
+                        validBox.classList.remove("box-valid");
+                    });
+                    shuffelChildren(board);
+                }
+                else {
                     showReaction("notice", newbox);
-           
-                    
                 }
-            })
-
+            });
         }
-        //********************************** Timer **********************************************//
-        shuffelChildren(board)
-
-        let temps = 500
-        const timerElement = document.getElementById("timer")
         
-        function diminuerTemps() {
-            let minutes = parseInt(temps / 60, 10)
-            let secondes = parseInt(temps % 60, 10)
 
-            minutes = minutes < 10 ? "0" + minutes : minutes
-            secondes = secondes < 10 ? "0" + secondes : secondes
+        // Fonction Timer 
+        function startTimer() {
+            timerInterval = setInterval(function () {
+                seconds++;
+                if (seconds >= 60) {
+                    seconds = 0;
+                    minutes++;
+                }
+                timerDisplay.innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
 
-            timerElement.innerText = minutes + ":" + secondes
-            temps = temps <= 0 ? 0 : temps - 1
-}
-        
-      setInterval(diminuerTemps, 1000)
+        function saveScore() {
+            const timeElapsed = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            const scoreItem = document.createElement("li");
+            scoreItem.innerText = timeElapsed;
+            scoresList.appendChild(scoreItem);
+        }
 
-
-        //****************************************************************************/
-
-
-        // L'éxique: 
-        // 1 : si nb est égal au nombre de boite du jeu, c'est que le dernier clic était sur la dernière boite -> victoire du joueur ! ( il ne faut pas incrémenter nb avant !)
-        // 2 : Si le numéro de la boite est supérieur à nb, c'est que le joueur a cliqué une boite trop élevée -> game over !
-        // 3 Dernière possibilité : le joueur a cliqué sur une boite déjà grisée. On l'informe simplement de cela, jeu ne redémarre pas.
-        
-        //*************************************************************************************************************************************************************//
-        //let i = board.children.length, k , temp
-        //while ( --i > 0) {// on boucle tant  que  1 oté de i est toujours positif 
-            // k  stocke un nomvre aléatoir basé sur i
-           // k  = Math.floor(Math.random() * (i+1))
-            // temp pointe temporairement  l'élément à la position k dans board 
-           // temp = board.children[k]
-            // remplace l'élément à la position k par l'élément à la position  i
-           // bord.children[k] = bord.children[i]
-            // place l'élément k pointé  temporairement à la fin du contenu de board 
-           // board.appendChild(temp) 
-            
-        //}
+        // Fonction pour démarrer le timer
+        startTimer();
 
     </script>
 </body>
