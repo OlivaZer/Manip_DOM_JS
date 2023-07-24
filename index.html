@@ -17,6 +17,7 @@
     <!-- Tableau des scores -->
     <div id="scoreboard">
         <h2>Score board :</h2>
+        <hr>
         <ul id="scores"></ul>
     </div>
     
@@ -134,17 +135,52 @@
             }, 1000);
         }
 
-        // Fonction pour sauvegarder le score
+        
+         // Fonction pour sauvegarder le score
         function saveScore() {
             // Crée une chaîne de caractères représentant le temps écoulé dans le format "minutes:secondes"
             const timeElapsed = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
             // Crée un nouvel élément li pour afficher le score
             const scoreItem = document.createElement("li");
             // Définit le texte de l'élément li avec le temps écoulé
             scoreItem.innerText = timeElapsed;
-            // Ajoute le score à ma liste de score 
+
+            // Ajoute le score à la liste de scores
             scoresList.appendChild(scoreItem);
+
+            // Trie les scores du meilleur au moins bon
+            const scores = Array.from(scoresList.children);
+            scores.sort((a, b) => {
+                const timeA = a.innerText;
+                const timeB = b.innerText;
+                return compareTimeScores(timeA, timeB);
+            });
+
+            // Met à jour l'affichage des scores après le tri
+            scoresList.innerHTML = '';
+            scores.forEach(score => {
+                scoresList.appendChild(score);
+            });
         }
+        //******************************* Comparateur *******************************************************//
+        
+        // Fonction pour comparer deux scores au format "minutes:secondes"
+        function compareTimeScores(scoreA, scoreB) {
+            // On divise chaque score grace à la méthode split() en minutes et secondes et on les convertit en nombres puis la méthode map() avec Number pour les convertir en nombres entiers pour simplifier la comparaison
+            const [minA, secA] = scoreA.split(':').map(Number);
+            const [minB, secB] = scoreB.split(':').map(Number);
+
+            // On compare les minutes des deux scores
+            if (minA === minB) {
+                // Si les minutes sont égales, on compare les secondes et retourne la différence
+                return secA - secB;
+            } else {
+                // Sinon, on compare les minutes et retourne la différence
+                return minA - minB;
+            }
+        }
+
 
         /************************** Reset *****************************************************/
         
