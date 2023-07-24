@@ -33,7 +33,9 @@
     background-color:grey;
     border: solid;
     margin-top: 20px;
-    width: 30%;
+    width: 20%;
+    height: 600px;
+    
 }
 
 .box.error{ color: rgb(144, 58, 58); background-color: rgb(255, 160, 190);}

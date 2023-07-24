@@ -12,13 +12,14 @@
     <div id="board"></div>
     <!-- Affichage du timer -->
     <div id="timer">0:00</div>
+     <!-- Bouton Rejouer -->
+    <button id="restart-button" onclick="replay()">Rejouer</button>
     <!-- Tableau des scores -->
     <div id="scoreboard">
         <h2>Score board :</h2>
         <ul id="scores"></ul>
     </div>
-     <!-- Bouton Rejouer -->
-     <button id="replayButton" onclick="replay()">Rejouer</button>
+    
 
     <script>
         // Demande le nombre de cases au joueur
@@ -115,7 +116,7 @@
             });
         }
         
-
+        /************************************ Timer **********************************************/
         // Fonction Timer 
         function startTimer() {
             // Définit un intervalle qui s'exécute toutes les 1000 ms (1 seconde)
@@ -144,6 +145,32 @@
             // Ajoute le score à ma liste de score 
             scoresList.appendChild(scoreItem);
         }
+
+        /************************** Reset *****************************************************/
+        
+         // Fonction pour réinitialiser le jeu
+         function replay() {
+            // Arrête le timer s'il est en cours
+            clearInterval(timerInterval);
+
+            // Réinitialise les variables de jeu
+            nb = 1;
+            seconds = 0;
+            minutes = 0;
+            gameStarted = false;
+
+            // Réinitialise l'affichage du timer
+            timerDisplay.innerText = "0:00";
+
+            // Supprime les classes "box-valid", "error", "notice" de toutes les cases
+            board.querySelectorAll(".box").forEach(box => {
+                box.classList.remove("box-valid", "error", "notice");
+            });
+
+            // Mélange les cases
+            shuffelChildren(board);
+        }
+
 
     </script>
 </body>
