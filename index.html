@@ -50,6 +50,8 @@
         let timerInterval;
         let seconds = 0;
         let minutes = 0;
+        //  variable pour savoir si le jeu a commencé ou non
+        let gameStarted = false; 
 
         for (let i = 1; i <= nombreBox; i++) {
             const newbox = box.cloneNode();
@@ -57,6 +59,11 @@
             board.appendChild(newbox);
 
             newbox.addEventListener("click", function () {
+                if (!gameStarted) {
+                    // Démarrer le timer lorsque le joueur clique sur la première case
+                    startTimer(); 
+                    gameStarted = true;
+                }
 
                 if (i === nb) {
                     newbox.classList.add("box-valid");
@@ -105,9 +112,6 @@
             scoreItem.innerText = timeElapsed;
             scoresList.appendChild(scoreItem);
         }
-
-        // Fonction pour démarrer le timer
-        startTimer();
 
     </script>
 </body>
