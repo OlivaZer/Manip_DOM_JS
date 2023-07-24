@@ -8,30 +8,47 @@
     <title>document</title>
 </head>
 <body>
+    <!-- Cases du jeu -->
     <div id="board"></div>
+    <!-- Affichage du timer -->
     <div id="timer">0:00</div>
+    <!-- Tableau des scores -->
     <div id="scoreboard">
         <h2>Score board :</h2>
         <ul id="scores"></ul>
     </div>
 
     <script>
-
+        // Demande le nombre de cases au joueur
         let nombreBox = prompt("Choisissez le nombre de box");
 
+         // Fonction pour mélanger les enfants d'un élément parent
         function shuffelChildren(parent) {
+
+            // Récupère tous les enfants de l'élément parent (div#board)
             let children = parent.children;
+            // Initialise les variables pour la boucle de mélange
             let i = children.length, k, temp;
+            // Boucle pour mélanger les enfants
             while (--i > 0) {
+                
+                // Génère un nombre aléatoire entre 0 et i (inclus)
                 k = Math.floor(Math.random() * (i + 1));
+                // Échange l'enfant actuel (i) avec l'enfant aléatoire (k)
                 temp = children[k];
                 children[k] = children[i];
+                // Ajoute l'enfant actuel (i) à la fin du parent
                 parent.appendChild(temp);
             }
         }
 
+        // Fonction pour afficher le changement de couleur lors d'un clic sur une case
         function showReaction(type, clickedBox) {
+
+            // Ajoute la classe spécifiée (type) à la case cliquée (clickedBox)
             clickedBox.classList.add(type);
+
+            // Si le type n'est pas "success", retire la classe après 800 ms
             if (type !== "success") {
                 setTimeout(function () {
                     clickedBox.classList.remove(type);
@@ -39,9 +56,11 @@
             }
         }
 
+        // Création d'une instance de case
         const box = document.createElement("div");
         box.classList.add("box");
 
+        // Sélection des éléments du DOM
         const board = document.querySelector("#board");
         const timerDisplay = document.querySelector("#timer");
         const scoresList = document.querySelector("#scores");
@@ -53,6 +72,7 @@
         //  variable pour savoir si le jeu a commencé ou non
         let gameStarted = false; 
 
+        // Boucle pour créer les cases en fonction du nombre saisi par le joueur
         for (let i = 1; i <= nombreBox; i++) {
             const newbox = box.cloneNode();
             newbox.innerText = i;
@@ -96,20 +116,30 @@
 
         // Fonction Timer 
         function startTimer() {
+            // Définit un intervalle qui s'exécute toutes les 1000 ms (1 seconde)
             timerInterval = setInterval(function () {
+                // Incrémente le compteur de secondes
                 seconds++;
+                // Si le nombre de secondes atteint 60, réinitialise les secondes et incrémente les minutes
                 if (seconds >= 60) {
                     seconds = 0;
                     minutes++;
                 }
+
+                // Met à jour l'affichage du timer avec le temps écoulé au format "minutes:secondes"
                 timerDisplay.innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             }, 1000);
         }
 
+        // Fonction pour sauvegarder le score
         function saveScore() {
+            // Crée une chaîne de caractères représentant le temps écoulé dans le format "minutes:secondes"
             const timeElapsed = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            // Crée un nouvel élément li pour afficher le score
             const scoreItem = document.createElement("li");
+            // Définit le texte de l'élément li avec le temps écoulé
             scoreItem.innerText = timeElapsed;
+            // Ajoute le score à ma liste de score 
             scoresList.appendChild(scoreItem);
         }
 
